@@ -5,6 +5,25 @@ import numpy.fft as fft
 omega0 = 1
 
 def G(kx, ky, kz, a, om=omega0):
+    """
+    Green function for the Poisson equation
+
+    Parameters
+    ----
+    - kx, ky, kz : L arrays
+        spatial frequencies in every cartesian direction
+
+    - a : real
+        scale factor
+
+    - om : real, optional
+        value of omega0. default : om0
+
+    Returns
+    -------
+    - mat : L*L*L matrix
+        G evaluated at each 3D point in k-space, 0 at origin
+    """
     n = len(kx)
     mat = np.zeros((n, n, n))
     for i in range(n):
@@ -20,20 +39,25 @@ def G(kx, ky, kz, a, om=omega0):
 def psolve(delta, a, om=omega0):
     """
     Solves Nabla phi = 3 om / (2a) * delta
-    ----
-    Goes in Fourier space. Will modify the delta array to input the solution phi
-
-
-    Keyword arguments
-    ----
-    delta (L*L*L array) -- density
-
-    a (real) -- scale factor
-
-    om (real, optional) -- value of omega0. default : omega0
     
-    Returns : 0
+    Parameters
     ----
+    - delta : L*L*L array
+        density
+
+    - a : real
+        scale factor
+
+    - om : real, optional
+        value of omega0. default : om0
+    
+    Returns
+    -------
+    - 0
+
+    Notes
+    -----
+    Goes in Fourier space. Will modify the delta array to input the solution phi
     """
     delta = fft.fftn(delta)
     L = np.shape(delta)[0]
