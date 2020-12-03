@@ -68,13 +68,13 @@ def mom_update(grid, pos, mom, a, da, l):
         d = 1 - t
         for c in range(3):
             accs[n, c] += (g(i,j,k,c)             * t[0]*t[1]*t[2] +
-                           g((i+1)%l,j,k,c)       * d[0]*t[1]*t[2] +
-                           g(i,(j+1)%l,k,c)       * t[0]*d[1]*t[2] +
-                           g((i+1)%l,(j+1)%l,k,c) * d[0]*d[1]*t[2] +
-                           g(i,j,(k+1)%l,c)       * t[0]*t[1]*d[2] +
-                           g((i+1)%l,j,(k+1)%l,c) * d[0]*t[1]*d[2] +
-                           g(i,(j+1)%l,(k+1)%l,c) * t[0]*d[1]*d[2] +
-                           g((i+1)%l,(j+1)%l,(k+1)%l,c) * d[0]*d[1]*d[2] )
+                        g((i+1)%l,j,k,c)       * d[0]*t[1]*t[2] +
+                        g(i,(j+1)%l,k,c)       * t[0]*d[1]*t[2] +
+                        g((i+1)%l,(j+1)%l,k,c) * d[0]*d[1]*t[2] +
+                        g(i,j,(k+1)%l,c)       * t[0]*t[1]*d[2] +
+                        g((i+1)%l,j,(k+1)%l,c) * d[0]*t[1]*d[2] +
+                        g(i,(j+1)%l,(k+1)%l,c) * t[0]*d[1]*d[2] +
+                        g((i+1)%l,(j+1)%l,(k+1)%l,c) * d[0]*d[1]*d[2] )
     mom += accs* f(a) * da
     return 0
 
@@ -107,5 +107,3 @@ def pos_update(pos, mom, a, da, l):
     pos += mom * (f(a + da/2) * da / (a + da/2)**2)
     pos %= l
     return 0
-
-

@@ -32,7 +32,7 @@ def G(kx, ky, kz, a, om=omega0):
                 if kx[i]==0 and ky[j]==0 and kz[k]==0:
                     mat[i,j,k] = 0
                 else:
-                    mat[i,j,k] = -3*om / (8*a * (np.sin(kx[i])**2 + np.sin(ky[j])**2 + np.sin(kz[k])**2))
+                    mat[i,j,k] = -3*om / (8*a * (np.sin(kx[i] / 2)**2 + np.sin(ky[j] / 2)**2 + np.sin(kz[k] / 2)**2))
     return mat
 
 
@@ -53,7 +53,7 @@ def psolve(delta, a, om=omega0):
     
     Returns
     -------
-    - 0
+    - 0 #TO UPDATE
 
     Notes
     -----
@@ -64,4 +64,4 @@ def psolve(delta, a, om=omega0):
     kx, ky, kz = fft.fftfreq(L), fft.fftfreq(L), fft.fftfreq(L)
     delta *= G(kx, ky, kz, a, om)
     delta = fft.ifftn(delta).real
-    return 0
+    return delta

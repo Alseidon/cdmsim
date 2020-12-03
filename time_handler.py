@@ -28,8 +28,6 @@ def density_update(grid_dens, pos, l, m, delta=True): #QUESTION : delta ?
     Returns
     ----
     - 0
-
-    - 
     """
     for i in range(l):
         for j in range(l):
@@ -54,7 +52,7 @@ def density_update(grid_dens, pos, l, m, delta=True): #QUESTION : delta ?
 
 
 
-def step(grid, pos, mom, l, m, a, da):
+def step(grid, pos, mom, l, m, a, pre_a, da):
     """
     Executes one step in the code
 
@@ -78,6 +76,9 @@ def step(grid, pos, mom, l, m, a, da):
     - a : real
         scale factor
     
+    - pre_a : real
+        scale factor from last step
+
     - da : real
         scale factor step to take
     
@@ -87,7 +88,8 @@ def step(grid, pos, mom, l, m, a, da):
     - 0
 
     """
-    _ = mom_update(-grid, pos, mom, a, da, l)
+    pre_da = a - pre_a
+    _ = mom_update(-grid, pos, mom, a-pre_da/2, (pre_da + da)/2, l)
     _ = pos_update(pos, mom, a, da, l)
     _ = density_update(grid, pos, l, m)
     _ = psolve(grid, a)
@@ -135,7 +137,7 @@ def affiche(pos, line, l, aff, starting):
 
 
 
-def simulator(l, m, a, pos_init, mom_init):
+def simulator(l, m, a, pos_init, mom_init, show=True):
     """
     Simulates gravitational evolution of particles representing a cold dark matter fluid
 
@@ -156,6 +158,9 @@ def simulator(l, m, a, pos_init, mom_init):
     - mom_init : N*3 array
         initial particle momenta
     
+    - show : boolean, optional
+        whether to give visual information on the data, or just execute the sim. default : True
+
     Returns
     ----
     - l_pos : list
@@ -164,20 +169,21 @@ def simulator(l, m, a, pos_init, mom_init):
     grid = np.zeros((l,l,l))
     pos, mom = pos_init, mom_init
 
-    line = affiche(pos, 0, l, True, True)
+    line = affiche(pos, 0, l, show, True)
 
     x_pre = np.copy(pos_init[0])
     l_pos = [np.copy(pos_init)[0]]
     pre_a = a[0]
     for current_a in a[1:]:
         da = current_a - pre_a
-        pre_a = current_a
-        step(grid, pos, mom, l, m, current_a, da)
-        print('a :{:.3f} / {:.3f}--- p : {} --- dx : {}'.format(current_a, a[-1], mom[0], pos[0]- x_pre))
+        step(grid, pos, mom, l, m, current_a, pre_a, da)
+        if show:
+            print('a :{:.3f} / {:.3f}--- p : {} --- dx : {}'.format(current_a, a[-1], mom[0], pos[0]- x_pre))
         x_pre = np.copy(pos[0])
         l_pos.append(np.copy(pos[0]))
-        affiche(pos, line, l, True, False)
+        affiche(pos, line, l, show, False)
         plt.pause(0.01)
-    affiche(pos, line, l, True, False)
+        pre_a = current_a
+    affiche(pos, line, l, show, False)
     plt.show()
     return l_pos
